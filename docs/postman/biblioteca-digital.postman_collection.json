@@ -1,0 +1,1172 @@
+{
+    "info": {
+        "name": "Biblioteca Digital Integrada",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Login administrador",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.collectionVariables.set('token_admin', pm.response.json().dados.token);"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\": \"admin@biblioteca.local\",\n    \"senha\": \"Admin@123\"\n}"
+                },
+                "url": "{{base_url}}/api/auth/login"
+            }
+        },
+        {
+            "name": "Login bibliotecária",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.collectionVariables.set('token_bibliotecario', pm.response.json().dados.token);"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\": \"paula.ribeiro@biblioteca.local\",\n    \"senha\": \"Biblio@123\"\n}"
+                },
+                "url": "{{base_url}}/api/auth/login"
+            }
+        },
+        {
+            "name": "Login leitora (Ana)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.collectionVariables.set('token_leitor', pm.response.json().dados.token);"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\": \"ana.souza@email.com\",\n    \"senha\": \"Leitor@123\"\n}"
+                },
+                "url": "{{base_url}}/api/auth/login"
+            }
+        },
+        {
+            "name": "T01 - Login do administrador",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "url": "{{base_url}}/api/auth/login",
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\": \"admin@biblioteca.local\",\n    \"senha\": \"Admin@123\"\n}"
+                }
+            }
+        },
+        {
+            "name": "T02 - Login com senha incorreta",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 401', () => pm.response.to.have.status(401));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "url": "{{base_url}}/api/auth/login",
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\": \"admin@biblioteca.local\",\n    \"senha\": \"senhaerrada1\"\n}"
+                }
+            }
+        },
+        {
+            "name": "T03 - Acesso sem token",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 401', () => pm.response.to.have.status(401));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "url": "{{base_url}}/api/materiais"
+            }
+        },
+        {
+            "name": "T04 - Cenário A - Ana solicita livro disponível",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 201', () => pm.response.to.have.status(201));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/emprestimos",
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"usuario_id\": 1,\n    \"material_id\": 1\n}"
+                }
+            }
+        },
+        {
+            "name": "T05 - Cenário A - disponibilidade atualizada",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/materiais/1"
+            }
+        },
+        {
+            "name": "T06 - Cenário B - Carlos solicita e-book",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 201', () => pm.response.to.have.status(201));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/emprestimos",
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"usuario_id\": 2,\n    \"material_id\": 3\n}"
+                }
+            }
+        },
+        {
+            "name": "T07 - Cenário B - acessos simultâneos do e-book",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/materiais/3"
+            }
+        },
+        {
+            "name": "T08 - Cenário C - Marina devolve 6 dias após o prazo",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/emprestimos/5/devolucao"
+            }
+        },
+        {
+            "name": "T09 - Devolução duplicada",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 409', () => pm.response.to.have.status(409));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/emprestimos/5/devolucao"
+            }
+        },
+        {
+            "name": "T10 - Cenário D - material sem exemplares",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 409', () => pm.response.to.have.status(409));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/emprestimos",
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"usuario_id\": 1,\n    \"material_id\": 4\n}"
+                }
+            }
+        },
+        {
+            "name": "T11 - Cenário E - leitor tenta cadastrar material",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 403', () => pm.response.to.have.status(403));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_leitor}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/materiais",
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"tipo\": \"livro\",\n    \"titulo\": \"Meu livro\",\n    \"autor\": \"Ana Souza\",\n    \"ano_publicacao\": 2024,\n    \"quantidade_total\": 1,\n    \"isbn\": \"9788500000001\",\n    \"editora\": \"Teste\",\n    \"paginas\": 100\n}"
+                }
+            }
+        },
+        {
+            "name": "T12 - Cenário F - relatório-resumo",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_admin}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/relatorios/resumo"
+            }
+        },
+        {
+            "name": "T13 - Listagem com filtro, ordenação e paginação",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_leitor}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/materiais?tipo=livro&disponivel=true&ordenar=titulo&direcao=desc&pagina=1&por_pagina=2"
+            }
+        },
+        {
+            "name": "T14 - Cadastro de material válido",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 201', () => pm.response.to.have.status(201));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/materiais",
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"tipo\": \"revista\",\n    \"titulo\": \"Mundo Digital\",\n    \"autor\": \"Editora Conecta\",\n    \"ano_publicacao\": 2026,\n    \"quantidade_total\": 4,\n    \"edicao\": 12,\n    \"issn\": \"1980-3311\"\n}"
+                }
+            }
+        },
+        {
+            "name": "T15 - Cadastro com dados inválidos",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 422', () => pm.response.to.have.status(422));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/materiais",
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"tipo\": \"livro\",\n    \"titulo\": \"A\",\n    \"ano_publicacao\": 3000,\n    \"quantidade_total\": 0\n}"
+                }
+            }
+        },
+        {
+            "name": "T16 - Atualização por bibliotecário (sem permissão)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 403', () => pm.response.to.have.status(403));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/materiais/11",
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"quantidade_total\": 6\n}"
+                }
+            }
+        },
+        {
+            "name": "T17 - Atualização pelo administrador",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_admin}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/materiais/11",
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"quantidade_total\": 6\n}"
+                }
+            }
+        },
+        {
+            "name": "T18 - Listar usuários",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_admin}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/usuarios"
+            }
+        },
+        {
+            "name": "T19 - Cadastrar usuário com conta de leitor",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 201', () => pm.response.to.have.status(201));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_admin}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/usuarios",
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"nome\": \"João Pereira\",\n    \"email\": \"joao.pereira@email.com\",\n    \"documento\": \"ALU-2024077\",\n    \"tipo\": \"aluno\",\n    \"senha\": \"Joao@2026\"\n}"
+                }
+            }
+        },
+        {
+            "name": "T20 - Cadastrar usuário com e-mail repetido",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 409', () => pm.response.to.have.status(409));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_admin}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/usuarios",
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"nome\": \"João Pereira\",\n    \"email\": \"joao.pereira@email.com\",\n    \"documento\": \"ALU-2024078\",\n    \"tipo\": \"aluno\"\n}"
+                }
+            }
+        },
+        {
+            "name": "T21 - Leitor lista empréstimos (somente os próprios)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_leitor}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/emprestimos"
+            }
+        },
+        {
+            "name": "T22 - Leitor consulta empréstimo de outra pessoa",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 403', () => pm.response.to.have.status(403));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_leitor}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/emprestimos/1"
+            }
+        },
+        {
+            "name": "T23 - Consultar empréstimo",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/emprestimos/1"
+            }
+        },
+        {
+            "name": "T24 - Empréstimos atrasados",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/emprestimos?status=atrasado"
+            }
+        },
+        {
+            "name": "T25 - Multas pendentes",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/multas?status=pendente"
+            }
+        },
+        {
+            "name": "T26 - Histórico de um usuário",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/historico?usuario_id=3&por_pagina=5"
+            }
+        },
+        {
+            "name": "T27 - Empréstimos por tipo de material",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_admin}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/relatorios/emprestimos-por-tipo"
+            }
+        },
+        {
+            "name": "T28 - Bloquear usuário",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_admin}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/usuarios/2/bloqueio"
+            }
+        },
+        {
+            "name": "T29 - Empréstimo para usuário bloqueado",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 409', () => pm.response.to.have.status(409));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/emprestimos",
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"usuario_id\": 2,\n    \"material_id\": 1\n}"
+                }
+            }
+        },
+        {
+            "name": "T30 - Desbloquear usuário",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_admin}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/usuarios/2/desbloqueio"
+            }
+        },
+        {
+            "name": "T31 - Material inexistente",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 404', () => pm.response.to.have.status(404));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_leitor}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/materiais/999"
+            }
+        },
+        {
+            "name": "T32 - JSON malformado",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 400', () => pm.response.to.have.status(400));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/emprestimos",
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"usuario_id\": 1,"
+                }
+            }
+        },
+        {
+            "name": "T33 - Bibliotecário tenta ver relatório",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 403', () => pm.response.to.have.status(403));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_bibliotecario}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/relatorios/resumo"
+            }
+        },
+        {
+            "name": "T34 - Logout",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 200', () => pm.response.to.have.status(200));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_leitor}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/auth/logout"
+            }
+        },
+        {
+            "name": "T35 - Uso de token revogado",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('status 401', () => pm.response.to.have.status(401));",
+                            "pm.test('resposta padronizada', () => pm.expect(pm.response.json()).to.have.property('sucesso'));"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token_leitor}}"
+                    }
+                ],
+                "url": "{{base_url}}/api/auth/me"
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000"
+        },
+        {
+            "key": "token_admin",
+            "value": ""
+        },
+        {
+            "key": "token_bibliotecario",
+            "value": ""
+        },
+        {
+            "key": "token_leitor",
+            "value": ""
+        }
+    ]
+}

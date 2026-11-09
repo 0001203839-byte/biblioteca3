@@ -224,3 +224,6 @@ Detalhes de parâmetros, corpo, permissões e exemplos de resposta em `docs/API.
 - **DIP:** serviços recebem interfaces no construtor; só a `Aplicacao` conhece as classes PDO. Os testes trocam tudo por implementações em memória.
 
 Explicação completa em `docs/RELATORIO_TECNICO.md`.
+
+
+Desenvolvido por Felipe.

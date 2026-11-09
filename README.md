@@ -225,5 +225,6 @@ Detalhes de parâmetros, corpo, permissões e exemplos de resposta em `docs/API.
 
 Explicação completa em `docs/RELATORIO_TECNICO.md`.
 
+## Autor
 
 Desenvolvido por Felipe.
